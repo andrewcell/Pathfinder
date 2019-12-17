@@ -2,6 +2,7 @@ import requests
 import psutil
 import sys
 import json
+from getpass import getpass
 #import argparse
 from nasa import Nasa
 from rocket import Rocket
@@ -23,14 +24,19 @@ def default(command=""):
 
 def register():
     print("Welcome to register program of Pathfinder towards to Mars.")
-    host = input("Type Mars World or compatible host (Not URL-scheme) : ")
+    while True:
+        host = input("Type Mars World or compatible host (Not URL-scheme) : ")
+        if host == "":
+            print("You entered blank hostname.")
+        else:
+            break
     port = input("Type Mars World port number(Just enter or out-range will be 443 : ")
     if port == "" or int(port) <= 1 or int(port) >=65535:
         port = 443
+    password = getpass("Type Registration password of targeted Mars (will not be echoed) : ")
     print("Contacting to Mars World...")
-    delta = Rocket(host, port)
-    
-    res = delta.POST({'Hello': 'World'}, "planitia/register")
+    delta = Rocket(host, port) 
+    res = delta.POST({'Hello': 'Mars World', password: password}, "planitia/register")
     if res.status_code != "200":
         print("Error to register to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
