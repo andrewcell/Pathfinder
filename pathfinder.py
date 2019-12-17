@@ -30,7 +30,7 @@ def register():
     print("Contacting to Mars World...")
     delta = Rocket(host, port)
     
-    res = delta.Send({'Hello': 'World'}, "planitia/register")
+    res = delta.POST({'Hello': 'World'}, "planitia/register")
     if res.status_code != "200":
         print("Error to register to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
