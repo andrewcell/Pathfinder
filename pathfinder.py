@@ -23,6 +23,10 @@ def default(command=""):
         print("Notice: It seems you must register to Mars first.")
 
 def register():
+    nasa = Nasa(".")
+    if nasa.fileExists("pathfinder.key") == True or nasa.fileExists("pathfinder.json") == True:
+        print("This system is already registered. For re-register, un-register first.")
+        exit(1)
     print("Welcome to register program of Pathfinder towards to Mars.")
     while True:
         host = input("Type Mars World or compatible host (Not URL-scheme) : ")
@@ -36,18 +40,27 @@ def register():
     password = getpass("Type Registration password of targeted Mars (will not be echoed) : ")
     print("Contacting to Mars World...")
     delta = Rocket(host, port) 
-    res = delta.POST({'Hello': 'Mars World', password: password}, "planitia/register")
-    if res.status_code != "200":
-        print("Error to register to Mars")
+    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 0}, "planitia/register")
+    if res.status_code != 200:
+        print("Error caused when connect to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
         print(res.text)
         exit(1)
         # {code: 200, comment: success, data: {publicKey: "-----BEGIN ...", systemId: "asdjfnasdfnkasjdf"},}
     data = json.loads(res.text)
     if data["code"] != 200:
-        print("Error to register to Mars")
+        print("Error caused when register to Mars")
         print("Error code: " + str(data["code"]) + ", Reason: " + data["comment"])
-
+        exit(1)
+    print(data)
+    nasa.savePublicKey(data["data"]["publicKey"])
+    print("Successfully registered to Mars. Configuration file will be saved.")
+    config = {
+        "host": host,
+        "port": port,
+        "systemid": data["data"]["systemId"]
+    }
+    nasa.saveJSON(config)
 
 
 def checkRegistered():
