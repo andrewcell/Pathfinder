@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Pathfinder configuration files
+pathfinder.key
+pathfinder.json
+
 # C extensions
 *.so
 
