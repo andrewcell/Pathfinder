@@ -6,11 +6,11 @@ class Nasa:
     def __init__(self, path):
         self.path = path
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
+        self.load()
     def load(self):
         try:
-            self.jsonfile = open(self.path + "/pathfinder.json", "r")
-            self.pubkey = open(self.path + "/pathfinder.key", "r")
+            self.jsonfile = open(self.path + "/pathfinder.json", "r").read()
+            self.pubkey = open(self.path + "/pathfinder.key", "r").read()
         except FileNotFoundError:
             self.jsonfile = "{\"comment\": \"notfound\"}"
             self.pubkey = "notfound"
@@ -26,6 +26,9 @@ class Nasa:
         key = open(os.path.join(self.__location__, "pathfinder.json"), "w")
         key.write(jsonfile)
         key.close()
+
+    def getPublicKey(self):
+        return self.pubkey
 
     def fileExists(self, filename):
         return os.path.exists(os.path.join(self.__location__, filename))
