@@ -10,7 +10,10 @@ from computer import Computer
 # def register():
 
 def default(command=""):
-    print(str(command) + " - Wrong command")
+    if command == "":
+        print("Command is not specified.")
+    else:
+        print(str(command) + " - Wrong command")
     print("""
     You must align specific command from below commands
     ---
@@ -130,4 +133,3 @@ if __name__ == "__main__":
 
     else:
         default(sys.argv[1])
-        # cpu_temp = putil.sensors_temperatures().item
