@@ -1,6 +1,7 @@
 import sys
 import json
 import time
+from datetime import datetime
 from getpass import getpass
 from nasa import Nasa
 from rocket import Rocket
@@ -94,14 +95,29 @@ def deregister():
     print("Deregistered successfully.")
 
 
-def Send(task, data, config):
+def daemon(computer):
+    while True:
+    #threading.Timer(1, daemon, [computer]).start()
+        syncData = computer.generateSyncData()
+        encrypted_data = computer.encryptToBase64(json.dumps(syncData))
+        Send("sync", encrypted_data, config, True)
+        now = datetime.now().microsecond
+        time.sleep((1000000-now)*0.000001)
+
+
+def Send(task, data, config, isDaemon=True):
     rocket = Rocket(config["host"], config["port"])
     response = rocket.POST({"systemid": config["systemid"], "data": data, "task": task}, "planitia/sync")
     try:
         data = json.loads(response.text)
         if data["code"] == 200 and data["comment"] == "success":
-            print("Successfully synced to Mars.")
-            exit(1)
+
+            if isDaemon:
+                from datetime import datetime
+                print("Synced - " + str(datetime.now()))
+            else:
+                print("Successfully synced to Mars.")
+                exit(1)
         else:
             print("Error caused. Here is respond : " + response.text)
     except json.decoder.JSONDecodeError:
@@ -130,6 +146,18 @@ if __name__ == "__main__":
         deregister()
     elif sys.argv[1] == "sync":
         sync()
+    elif sys.argv[1] == "daemon":
+        checkRegistered()
+        nasa = Nasa(".")
+        config = nasa.getConfiguration()
+        computer = Computer(nasa.getPublicKey())
+        daemon(computer)
+        #at = daemon(computer)
+           ### start = time.time()
+            #daemon(computer)//
+           # end = time.time() - start
+           # time.sleep(1 - end)
+
 
     else:
         default(sys.argv[1])
