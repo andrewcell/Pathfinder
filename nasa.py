@@ -19,7 +19,6 @@ class Nasa:
     def savePublicKey(self, pem):
         key = open(os.path.join(self.__location__, "pathfinder.key"), "w")
         key.write(str(pem))
-        print(self.__location__)
         key.close()
 
     def saveJSON(self, dict):

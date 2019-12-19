@@ -74,7 +74,7 @@ def register():
     encrypted_data = computer.encryptToBase64(json.dumps(informationData))
     nasa.savePublicKey(data["data"]["publicKey"])
     nasa.saveJSON(config)
-    Send("information", encrypted_data, config)
+    Send("information", encrypted_data, config, False)
 
 
 
