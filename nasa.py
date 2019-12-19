@@ -10,8 +10,8 @@ class Nasa:
 
     def load(self):
         try:
-            self.jsonfile = open(self.path + "/pathfinder.json", "r").read()
-            self.pubkey = open(self.path + "/pathfinder.key", "r").read()
+            self.jsonfile = open(self.__location__ + "/pathfinder.json", "r").read()
+            self.pubkey = open(self.__location__ + "/pathfinder.key", "r").read()
         except FileNotFoundError:
             self.jsonfile = "{\"comment\": \"notfound\"}"
             self.pubkey = "notfound"
@@ -56,3 +56,4 @@ class Nasa:
     def returnJSON(self):
         self.load()
         return json.loads(self.jsonfile)
+
