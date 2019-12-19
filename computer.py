@@ -13,9 +13,11 @@ from nasa import Nasa
 class Computer:
     def __init__(self, publickey):
         self.key = load_pem_public_key(data=bytearray(publickey, "ascii"), backend=default_backend())
+
     def encryptToBase64(self, string, encoding="ascii"):
         byte = string.encode()
-        cipher = self.key.encrypt(byte, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None))
+        cipher = self.key.encrypt(byte, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA1()), algorithm=hashes.SHA1(),
+                                                     label=None))
         return base64.b64encode(cipher)
 
     def generateInformationData(self):
@@ -23,11 +25,17 @@ class Computer:
             "name": self.getHostname(),
             "architecture": self.getArchitecture(),
             "cpu_name": get_cpu_info()["brand"],
-            "cpu_usage": psutil.cpu_percent(),
-            "ram_usage": psutil.virtual_memory()[2],
-            "ram_size": psutil.virtual_memory()[0],
             "kernel_name": self.getKernelName(),
             "kernel_version": self.getKernelVersion(),
+            "ram_size": psutil.virtual_memory()[0],
+        }
+        return data
+
+    def generateSyncData(self):
+        data = {
+            "cpu_usage": psutil.cpu_percent(),
+            "ram_usage": psutil.virtual_memory()[2],
+
         }
         return data
 
