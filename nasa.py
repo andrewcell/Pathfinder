@@ -7,6 +7,7 @@ class Nasa:
         self.path = path
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.load()
+
     def load(self):
         try:
             self.jsonfile = open(self.path + "/pathfinder.json", "r").read()
@@ -29,6 +30,17 @@ class Nasa:
 
     def getPublicKey(self):
         return self.pubkey
+
+    def getConfiguration(self):
+        return json.loads(open(self.path + "/pathfinder.json", "r").read())
+
+    def removeConfiguration(self):
+        json = self.path + "/pathfinder.json"
+        key = self.path + "/pathfinder.key"
+        if os.path.isfile(json):
+            os.remove(json)
+        if os.path.isfile(key):
+            os.remove(key)
 
     def fileExists(self, filename):
         return os.path.exists(os.path.join(self.__location__, filename))
