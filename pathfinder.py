@@ -43,9 +43,14 @@ def register():
     port = input("Type Mars World port number(Just enter or out-range will be 443 : ")
     if port == "" or int(port) <= 1 or int(port) >= 65535:
         port = 443
+    tls = input("Do you prefer use HTTPS protocol? (Just enter or other answers except NO will consider as YES)")
+    if tls == "NO":
+        tls = False
+    else:
+        tls = True
     password = getpass("Type Registration password of targeted Mars (will not be echoed) : ")
     print("Contacting to Mars World...")
-    delta = Rocket(host, port)
+    delta = Rocket(host, port, tls)
     res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 0}, "planitia/register")
     if res.status_code != 200:
         print("Error caused when connect to Mars")
@@ -63,7 +68,8 @@ def register():
         "host": host,
         "port": port,
         "systemid": data["data"]["systemId"],
-        "comment": "registered"
+        "comment": "registered",
+        "tls": tls
     }
     print("Sending system information to Mars...")
 
@@ -106,7 +112,7 @@ def daemon(computer):
 
 
 def Send(task, data, config, isDaemon=True):
-    rocket = Rocket(config["host"], config["port"])
+    rocket = Rocket(config["host"], config["port"], config["tls"])
     response = rocket.POST({"systemid": config["systemid"], "data": data, "task": task}, "planitia/sync")
     try:
         data = json.loads(response.text)
