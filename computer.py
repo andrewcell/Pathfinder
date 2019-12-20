@@ -12,7 +12,7 @@ from nasa import Nasa
 
 class Computer:
     def __init__(self, publickey):
-        self.key = load_pem_public_key(data=bytearray(publickey, "ascii"), backend=default_backend())
+        self.key = load_pem_public_key(data=publickey.encode(), backend=default_backend())
 
     def encryptToBase64(self, string, encoding="ascii"):
         byte = string.encode()
