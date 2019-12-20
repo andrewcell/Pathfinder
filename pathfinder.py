@@ -80,7 +80,7 @@ def register():
     encrypted_data = computer.encryptToBase64(json.dumps(informationData))
     nasa.savePublicKey(data["data"]["publicKey"])
     nasa.saveJSON(config)
-    Send("information", encrypted_data, config, False)
+    Send(delta, "information", encrypted_data, data["data"]["systemId"], False)
 
 
 
@@ -92,7 +92,8 @@ def sync():
     computer = Computer(nasa.getPublicKey())
     syncData = computer.generateSyncData()
     encrypted_data = computer.encryptToBase64(json.dumps(syncData))
-    Send("sync", encrypted_data, config)
+    rocket = Rocket(config["host"], config["port"], config["tls"])
+    Send(rocket, "sync", encrypted_data, config["systemid"])
 
 
 def deregister():
@@ -101,19 +102,19 @@ def deregister():
     print("Deregistered successfully.")
 
 
-def daemon(computer):
+def daemon():
+    rocket = Rocket(config["host"], config["port"], config["tls"])
     while True:
     #threading.Timer(1, daemon, [computer]).start()
         syncData = computer.generateSyncData()
         encrypted_data = computer.encryptToBase64(json.dumps(syncData))
-        Send("sync", encrypted_data, config, True)
+        Send(rocket, "sync", encrypted_data, config["systemid"], True)
         now = datetime.now().microsecond
         time.sleep((1000000-now)*0.000001)
 
 
-def Send(task, data, config, isDaemon=True):
-    rocket = Rocket(config["host"], config["port"], config["tls"])
-    response = rocket.POST({"systemid": config["systemid"], "data": data, "task": task}, "planitia/sync")
+def Send(rocket, task, data, systemid, isDaemon=True):
+    response = rocket.POST({"systemid": systemid, "data": data, "task": task}, "planitia/sync")
     try:
         data = json.loads(response.text)
         if data["code"] == 200 and data["comment"] == "success":
@@ -157,7 +158,7 @@ if __name__ == "__main__":
         nasa = Nasa(".")
         config = nasa.getConfiguration()
         computer = Computer(nasa.getPublicKey())
-        daemon(computer)
+        daemon()
         #at = daemon(computer)
            ### start = time.time()
             #daemon(computer)//
