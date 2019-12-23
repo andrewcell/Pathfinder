@@ -114,7 +114,7 @@ def daemon():
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
-    response = rocket.POST({"systemid": systemid, "data": data, "task": task}, "planitia/sync")
+    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": "2"}, "planitia/sync")
     try:
         data = json.loads(response.text)
         if data["code"] == 200 and data["comment"] == "success":
