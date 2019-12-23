@@ -81,7 +81,7 @@ def register():
     nasa.savePublicKey(data["data"]["publicKey"])
     nasa.saveJSON(config)
     Send(delta, "information", encrypted_data, data["data"]["systemId"], False)
-
+    sync()
 
 
 def sync():
