@@ -110,7 +110,7 @@ def daemon():
         encrypted_data = computer.encryptToBase64(json.dumps(syncData))
         Send(rocket, "sync", encrypted_data, config["systemid"], True)
         now = datetime.now().microsecond
-        time.sleep(((1000000-now)*0.000001)+4)
+        time.sleep(((1000000-now)*0.000001)+2)
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
