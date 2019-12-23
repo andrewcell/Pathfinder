@@ -61,7 +61,22 @@ class Computer:
 
 
     def getArchitecture(self):
-        return platform.machine()
+        default = {
+            'amd64': 'amd64',
+            'AMD64': 'amd64',
+            'x86_64': 'amd64',
+            'i386': 'i386',
+            'i486': 'i386',
+            'i586': 'i386',
+            'i686': 'i386',
+            'armv7l': 'arm',
+            'armv7': 'arm',
+            'armv8': 'aarch64',
+            'armv8l': 'aarch64'
+
+        }
+        arch = default.get(platform.machine(), lambda: "unknown")
+        return arch
 
     def getKernelName(self):
         return platform.system()
