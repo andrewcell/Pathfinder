@@ -37,6 +37,7 @@ class Computer:
         data = {
             "cpu_usage": psutil.cpu_percent(),
             "ram_usage": psutil.virtual_memory()[2],
+            "network_usage": self.getNetworkUsage(),
             "datetime": self.getTimedata()
         }
         return data
@@ -83,3 +84,12 @@ class Computer:
 
     def getKernelVersion(self):
         return platform.release()
+
+    def getNetworkUsage(self):
+        #if platform.system() == "Linux":
+
+        psutil_value = psutil.net_io_counters()
+        sent = psutil_value.bytes_sent
+        recv = psutil_value.bytes_recv
+        return {"sent": sent, "recv": recv}
+
