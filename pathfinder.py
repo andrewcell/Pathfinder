@@ -51,7 +51,7 @@ def register():
     password = getpass("Type Registration password of targeted Mars (will not be echoed) : ")
     print("Contacting to Mars World...")
     delta = Rocket(host, port, tls)
-    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 3}, "planitia/register")
+    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 4}, "planitia/register")
     if res.status_code != 200:
         print("Error caused when connect to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
@@ -114,19 +114,24 @@ def daemon():
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
-    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": "3"}, "planitia/sync")
+    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": "4"}, "planitia/sync")
     try:
         data = json.loads(response.text)
         if data["code"] == 200 and data["comment"] == "success":
-
             if isDaemon:
                 from datetime import datetime
                 print("Synced - " + str(datetime.now()))
             else:
                 print("Successfully synced to Mars.")
                 exit(1)
+        elif data["code"] == 305 and data["comment"] == "requireupdate":
+            informationData = computer.generateInformationData()
+            encrypted_data = computer.encryptToBase64(json.dumps(informationData))
+            rocket.POST({"systemid": systemid, "data": encrypted_data, "task": "information", "v": "4"}, "planitia/sync")
+            print("Successfully sent system information data to Mars.")
         else:
             print("Error caused. Here is respond : " + response.text)
+
     except json.decoder.JSONDecodeError:
         print("JSON Parse Error caused. Status code : " + str(response.status_code))
 

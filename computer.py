@@ -2,6 +2,7 @@ import base64
 import platform
 import psutil
 import socket
+import distro
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
@@ -31,6 +32,7 @@ class Computer:
             "kernel_name": self.getKernelName(),
             "kernel_version": self.getKernelVersion(),
             "ram_size": psutil.virtual_memory()[0],
+            "distribution": self.getDistribution(),
             "datetime": self.getTimedata()
         }
         return data
@@ -100,4 +102,28 @@ class Computer:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("1.1.1.1", 80))
         return s.getsockname()[0]
+
+    def getDistribution(self):
+        system = platform.system()
+        data = {
+            "name": "",
+            "version": ""
+        }
+        if system == "Windows":
+            data["name"] = "Windows"
+        elif system == "Linux":
+            dist = distro.linux_distribution(full_distribution_name=True)
+            data["name"] = dist[0]
+            data["version"] = dist[1]
+        elif system == "FreeBSD":
+            data["name"] = system
+            data["version"] = platform.release()
+        elif system == "Darwin":
+            data["name"] = "macOS"
+            data["version"] = platform.mac_ver()[0]
+        else:
+            data["name"] = "Unknown"
+            data["version"] = "0"
+        return data
+
 
