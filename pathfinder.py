@@ -51,7 +51,7 @@ def register():
     password = getpass("Type Registration password of targeted Mars (will not be echoed) : ")
     print("Contacting to Mars World...")
     delta = Rocket(host, port, tls)
-    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 0}, "planitia/register")
+    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 3}, "planitia/register")
     if res.status_code != 200:
         print("Error caused when connect to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
@@ -114,7 +114,7 @@ def daemon():
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
-    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": "2"}, "planitia/sync")
+    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": "3"}, "planitia/sync")
     try:
         data = json.loads(response.text)
         if data["code"] == 200 and data["comment"] == "success":

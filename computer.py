@@ -1,6 +1,8 @@
 import base64
 import platform
 import psutil
+import socket
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
@@ -38,6 +40,7 @@ class Computer:
             "cpu_usage": psutil.cpu_percent(),
             "ram_usage": psutil.virtual_memory()[2],
             "network_usage": self.getNetworkUsage(),
+            "localip": self.getLocalIPAddress(),
             "datetime": self.getTimedata()
         }
         return data
@@ -92,4 +95,9 @@ class Computer:
         sent = psutil_value.bytes_sent
         recv = psutil_value.bytes_recv
         return {"sent": sent, "recv": recv}
+
+    def getLocalIPAddress(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("1.1.1.1", 80))
+        return s.getsockname()[0]
 
