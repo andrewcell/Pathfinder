@@ -8,7 +8,9 @@ from rocket import Rocket
 from computer import Computer
 
 
-# def register():
+# version
+v = "4"
+
 
 def default(command=""):
     if command == "":
@@ -51,7 +53,7 @@ def register():
     password = getpass("Type Registration password of targeted Mars (will not be echoed) : ")
     print("Contacting to Mars World...")
     delta = Rocket(host, port, tls)
-    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": 4}, "planitia/register")
+    res = delta.POST({'Hello': 'Mars World', 'password': password, "v": v}, "planitia/register")
     if res.status_code != 200:
         print("Error caused when connect to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
@@ -114,7 +116,7 @@ def daemon():
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
-    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": "4"}, "planitia/sync")
+    response = rocket.POST({"systemid": systemid, "data": data, "task": task, "v": v}, "planitia/sync")
     try:
         data = json.loads(response.text)
         if data["code"] == 200 and data["comment"] == "success":
@@ -127,7 +129,7 @@ def Send(rocket, task, data, systemid, isDaemon=True):
         elif data["code"] == 305 and data["comment"] == "requireupdate":
             informationData = computer.generateInformationData()
             encrypted_data = computer.encryptToBase64(json.dumps(informationData))
-            rocket.POST({"systemid": systemid, "data": encrypted_data, "task": "information", "v": "4"}, "planitia/sync")
+            rocket.POST({"systemid": systemid, "data": encrypted_data, "task": "information", "v": v}, "planitia/sync")
             print("Successfully sent system information data to Mars.")
         else:
             print("Error caused. Here is respond : " + response.text)
