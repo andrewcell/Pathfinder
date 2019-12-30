@@ -1,6 +1,7 @@
 import sys
 import json
 import time
+import multiprocessing
 from datetime import datetime
 from getpass import getpass
 from nasa import Nasa
@@ -34,7 +35,7 @@ def register():
     nasa = Nasa(".")
     if nasa.fileExists("pathfinder.key") == True or nasa.fileExists("pathfinder.json") == True:
         print("This system is already registered. For re-register, de-register first.")
-        exit(1)
+        sys.exit(1)
     print("Welcome to register program of Pathfinder towards to Mars.")
     while True:
         host = input("Type Mars World or compatible host (Not URL-scheme) : ")
@@ -58,12 +59,12 @@ def register():
         print("Error caused when connect to Mars")
         print("Status Code: " + str(res.status_code) + ", Server respond : ")
         print(res.text)
-        exit(1)
+        sys.exit(1)
     data = json.loads(res.text)
     if data["code"] != 200:
         print("Error caused when register to Mars")
         print("Error code: " + str(data["code"]) + ", Reason: " + data["comment"])
-        exit(1)
+        sys.exit(1)
 
     print("Successfully registered to Mars. Configuration file will be saved.")
     config = {
@@ -125,7 +126,7 @@ def Send(rocket, task, data, systemid, isDaemon=True):
                 print("Synced - " + str(datetime.now()))
             else:
                 print("Successfully synced to Mars.")
-                exit(1)
+                sys.exit(1)
         elif data["code"] == 305 and data["comment"] == "requireupdate":
             informationData = computer.generateInformationData()
             encrypted_data = computer.encryptToBase64(json.dumps(informationData))
@@ -144,7 +145,7 @@ def checkRegistered(terminate=True):
     if data["comment"] == "notfound":
         if terminate:
             print("This system is not registered. Pathfinder require register to work.")
-            exit(1)
+            sys.exit(1)
         else:
             return False
     else:
@@ -152,6 +153,10 @@ def checkRegistered(terminate=True):
 
 
 if __name__ == "__main__":
+    if sys.platform.startswith('win'):
+        # On Windows calling this function is necessary.
+        multiprocessing.freeze_support()
+
     if len(sys.argv) < 2:
         default()
     elif sys.argv[1] == "register":
@@ -171,7 +176,5 @@ if __name__ == "__main__":
             #daemon(computer)//
            # end = time.time() - start
            # time.sleep(1 - end)
-
-
     else:
         default(sys.argv[1])

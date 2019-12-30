@@ -1,11 +1,14 @@
 import json
 import os
-
+import sys
 
 class Nasa:
     def __init__(self, path):
         self.path = path
-        self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        if getattr(sys, 'frozen', False):
+            self.__location__ = os.path.dirname(sys.executable)
+        else:
+            self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.load()
 
     def load(self):
