@@ -111,12 +111,14 @@ class Computer:
         }
         if system == "Windows":
             try:
-                __import__('wmi').find_module('WMI')
+                #__import__('wmi').find_module('WMI')
                 from wmi import WMI
                 for os in WMI().Win32_OperatingSystem():
                     data["name"] = os.Caption.replace("Microsoft ", "")
+                    data["version"] = os.Version
             except ImportError:
                 data["name"] = "Windows"
+                data["version"] = platform.version()
         elif system == "Linux":
             dist = distro.linux_distribution(full_distribution_name=True)
             data["name"] = dist[0]
