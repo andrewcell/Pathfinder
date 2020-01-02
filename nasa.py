@@ -60,3 +60,7 @@ class Nasa:
         self.load()
         return json.loads(self.jsonfile)
 
+    def addConfig(self, optionName, optionValue):
+        dict = self.getConfiguration()
+        dict[optionName] = optionValue
+        self.saveJSON(dict)

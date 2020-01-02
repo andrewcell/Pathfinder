@@ -10,7 +10,7 @@ from computer import Computer
 
 
 # version
-v = "4"
+v = "5"
 
 
 def default(command=""):
@@ -72,7 +72,8 @@ def register():
         "port": port,
         "systemid": data["data"]["systemId"],
         "comment": "registered",
-        "tls": tls
+        "tls": tls,
+        "intervals": data["data"]["intervals"]
     }
     print("Sending system information to Mars...")
 
@@ -113,7 +114,7 @@ def daemon():
         encrypted_data = computer.encryptToBase64(json.dumps(syncData))
         Send(rocket, "sync", encrypted_data, config["systemid"], True)
         now = datetime.now().microsecond
-        time.sleep(((1000000-now)*0.000001)+1)
+        time.sleep(((1000000-now)*0.000001)+(config["intervals"]-1))
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
@@ -128,6 +129,7 @@ def Send(rocket, task, data, systemid, isDaemon=True):
                 print("Successfully synced to Mars.")
                 sys.exit(1)
         elif data["code"] == 305 and data["comment"] == "requireupdate":
+            nasa.addConfig("intervals", data["data"])
             informationData = computer.generateInformationData()
             encrypted_data = computer.encryptToBase64(json.dumps(informationData))
             rocket.POST({"systemid": systemid, "data": encrypted_data, "task": "information", "v": v}, "planitia/sync")
