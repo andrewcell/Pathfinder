@@ -10,7 +10,7 @@ from computer import Computer
 
 
 # version
-v = "5"
+v = "6"
 
 
 def default(command=""):
