@@ -56,7 +56,6 @@ class Computer:
         }
         self.disk = disk
         self.network = network
-        print(data)
 
         return data
 
