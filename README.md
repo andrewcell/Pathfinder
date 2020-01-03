@@ -14,11 +14,11 @@ user@localhost:~> sudo zypper install python3-requests python3-psutil python3-be
 ```
 ## Ubuntu
 ```bash
-user@localhost:~/Pathfinder$ sudo apt install python3-cpuinfo python3-psutil python3-bs4 python3-cryptography
+user@localhost:~/Pathfinder$ sudo apt install python3-cpuinfo python3-psutil python3-bs4 python3-cryptography python3-distro
 ```
 ## Fedora
 ```bash
-[andrew@raspberrypi Mars]$ sudo dnf install python3-beautifulsoup4 python3-psutil python3-cryptography python3-requests
+[andrew@raspberrypi Mars]$ sudo dnf install python3-beautifulsoup4 python3-psutil python3-cryptography python3-requests python3-distro
 ```
 ## FreeBSD
 ```bash
