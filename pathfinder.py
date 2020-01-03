@@ -94,7 +94,7 @@ def sync():
     config = nasa.getConfiguration()
 
     computer = Computer(nasa.getPublicKey())
-    syncData = computer.generateSyncData()
+    syncData = computer.generateSyncData(1)
     encrypted_data = computer.encryptToBase64(json.dumps(syncData))
     rocket = Rocket(config["host"], config["port"], config["tls"])
     Send(rocket, "sync", encrypted_data, config["systemid"])
@@ -110,7 +110,7 @@ def daemon():
     rocket = Rocket(config["host"], config["port"], config["tls"])
     while True:
     #threading.Timer(1, daemon, [computer]).start()
-        syncData = computer.generateSyncData()
+        syncData = computer.generateSyncData(config["intervals"])
         encrypted_data = computer.encryptToBase64(json.dumps(syncData))
         Send(rocket, "sync", encrypted_data, config["systemid"], True)
         now = datetime.now().microsecond

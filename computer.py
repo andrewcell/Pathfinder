@@ -18,6 +18,8 @@ from nasa import Nasa
 class Computer:
     def __init__(self, publickey):
         self.key = load_pem_public_key(data=publickey.encode(), backend=default_backend())
+        self.disk = self.getDiskIOUsage()
+        self.network = self.getNetworkUsage()
 
     def encryptToBase64(self, string, encoding="ascii"):
         byte = string.encode()
@@ -37,14 +39,25 @@ class Computer:
         }
         return data
 
-    def generateSyncData(self):
+    def generateSyncData(self, intervals):
+        disk = self.getDiskIOUsage()
+        network = self.getNetworkUsage()
+
         data = {
             "cpu_usage": psutil.cpu_percent(),
             "ram_usage": psutil.virtual_memory()[2],
             "network_usage": self.getNetworkUsage(),
             "localip": self.getLocalIPAddress(),
+            "disk_read": self.getIOSpeed(disk["read"], self.disk["read"], intervals),
+            "disk_write": self.getIOSpeed(disk["write"], self.disk["write"], intervals),
+            "network_speed_send": self.getIOSpeed(network["sent"], self.network["sent"], intervals),
+            "network_speed_receive": self.getIOSpeed(network["recv"], self.network["recv"], intervals),
             "datetime": self.getTimedata()
         }
+        self.disk = disk
+        self.network = network
+        print(data)
+
         return data
 
     def getTimedata(self):
@@ -134,4 +147,11 @@ class Computer:
             data["version"] = "0"
         return data
 
+    def getDiskIOUsage(self):
+        io = psutil.disk_io_counters()
+        read = io.read_bytes
+        write = io.write_bytes
+        return {"read": read, "write": write}
 
+    def getIOSpeed(self, A, B, interval):
+        return (int(A) - int(B)) / interval
