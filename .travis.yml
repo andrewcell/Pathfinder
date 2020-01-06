@@ -19,6 +19,7 @@ jobs:
       osx_image: xcode11.2
       language: shell
       before_install:
+        - pip3 install virtualenv
         - virtualenv env
         - source env/bin/activate
       env: OUTPUT=pathfinder-macos
