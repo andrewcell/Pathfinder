@@ -8,10 +8,8 @@ from nasa import Nasa
 from rocket import Rocket
 from computer import Computer
 
-
 # version
 v = "6"
-
 
 def default(command=""):
     if command == "":
@@ -173,10 +171,5 @@ if __name__ == "__main__":
         config = nasa.getConfiguration()
         computer = Computer(nasa.getPublicKey())
         daemon()
-        #at = daemon(computer)
-           ### start = time.time()
-            #daemon(computer)//
-           # end = time.time() - start
-           # time.sleep(1 - end)
     else:
         default(sys.argv[1])

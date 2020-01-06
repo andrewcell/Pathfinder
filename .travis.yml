@@ -18,6 +18,9 @@ jobs:
       os: osx
       osx_image: xcode11.2
       language: shell
+      before_install:
+        - virtualenv env
+        - source env/bin/activate
       env: OUTPUT=pathfinder-macos
 
 # command to install dependencies
