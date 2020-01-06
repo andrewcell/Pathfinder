@@ -3,17 +3,14 @@ import platform
 import psutil
 import socket
 import distro
+import time
 
-from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from cryptography.hazmat.primitives.asymmetric import padding
-
 from cryptography.hazmat.primitives import hashes
 from cpuinfo import get_cpu_info
 from datetime import datetime
-import time
-from nasa import Nasa
 
 class Computer:
     def __init__(self, publickey):

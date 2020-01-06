@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 class Rocket:
     def __init__(self, host, port, TLS):
         self.host = host
