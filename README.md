@@ -24,3 +24,6 @@ user@localhost:~/Pathfinder$ sudo apt install python3-cpuinfo python3-psutil pyt
 ```bash
 root@localhost~:#  pkg install py36-requests py36-psutil py36-beautifulsoup py36-py-cpuinfo py36-distro
 ```
+
+# Build Status
+[![Build Status](https://travis-ci.org/andrewcell/Pathfinder.svg?branch=master)](https://travis-ci.org/andrewcell/Pathfinder)
