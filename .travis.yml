@@ -19,7 +19,7 @@ install:
   - pip3 install pyinstaller
 # command to run tests
 script:
-  - python3 test.py
+  - python test.py
   - pyinstaller pathfinder.py --onefile -n $OUTPUT
   - ls -l dist
 before_deploy:
