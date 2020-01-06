@@ -10,7 +10,7 @@ jobs:
         - python -m pip install --upgrade pip
         - pip3 install pywin32
         - pip3 install wmi
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder.exe; TAG=$(git log --format=%h -1)
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder-windows.exe; TAG=$(git log --format=%h -1)
     - name: "On Linux"
       os: linux
       python: 3.6
