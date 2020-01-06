@@ -11,7 +11,11 @@ jobs:
     - name: "On Linux"
       os: linux
       python: 3.6
-      env: OUTPUT=pathfinder_linux
+      env: OUTPUT=pathfinder-linux
+    - name: "On macOS"
+      os: osx
+      python: 3.6
+      env: OUTPUT=pathfinder-macos
 
 # command to install dependencies
 install:
