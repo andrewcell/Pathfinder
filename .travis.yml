@@ -14,7 +14,8 @@ jobs:
       env: OUTPUT=pathfinder-linux
     - name: "On macOS"
       os: osx
-      python: 3.6
+      osx_image: xcode11.2
+      language: shell
       env: OUTPUT=pathfinder-macos
 
 # command to install dependencies
