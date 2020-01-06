@@ -7,7 +7,7 @@ jobs:
       before_install:
         - choco install python --version 3.6.0
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder.exe
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder.exe; TAG=$(git log --format=%h -1)
     - name: "On Linux"
       os: linux
       python: 3.6
@@ -23,14 +23,18 @@ script:
   - pyinstaller pathfinder.py --onefile -n $OUTPUT
   - ls -l dist
 before_deploy:
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
+  - export RELEASE_TITLE=$(date '+%Y%m%d')
+  - export TRAVIS_TAG=$RELEASE_TITLE
 deploy:
+  name: $RELEASE_TITLE
   provider: releases
   api_key:
     secure: jiVsQcZOsWjNowx3NxfGywvziJ6Bf5vDccigusRL2OwnIkNYrGP0jRQRKfQxi2MSeVobZZ3mKDjXq++GBIH7Q6AWdDQ+K7vG1+vmsU1KKu/PhptgnOxUATYRobqm3ZKYpTgN4ZLYBQS22oBUT6piIKsFg7+u0o20sHAOWvvx7l+kvlK68MEta/M5L1TfcopSB+vaKPdGe+Twlx+LbvmvS96vVwtncQa+erkKO7QxkphNhUMmrfLEFCiJkniUMWytN//DGEl0zxKal0Tk3wF3pDhKO69nD1aRI3jpF4qfDO3+weRzXv0rzvBbpNJkDw78HkSw2Tjmspm7ZUK4gXfDhtJ9V2jyK9qYS2JO2SxZMWgU5OGrAi6o1Sv/LrABXpN06v99L+A2/CCaKyB6xgJKNsV4uDLKNqe3X6mzF0EdC172iOBm7gh/ueNEywSPbSM1d10xHk5X2osezE5tdNrx0hHXdhIl4CYuGvrN80YHwNHFxJI3zyvkRv2V8EwQ3jMLULN351uvcKEmJ//IUhxjsMC5x5u/NWRzDICmCjVq7dHBdOk3I9URafzne2wFCc75nehnstbvNLNFHJ3YpfWdNGa03GsbmV/gwDI3Cmd44pCSoRpj7IxMTxnzMKU+n39u1OEuFbF8aBhhGUWlHqkvKcrsJyMPwSKuHkjl47p/bi8=
   file: dist/*
   file_glob: true
+  skip_cleanup: true
+  overwrite: true
   on:
     repo: andrewcell/Pathfinder
+    #tags: true
     branch: master
