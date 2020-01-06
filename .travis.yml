@@ -1,4 +1,5 @@
 language: python
+if: tag IS blank
 jobs:
   include:
     - name: "On Windows"
