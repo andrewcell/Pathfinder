@@ -36,4 +36,3 @@ deploy:
     branches:
       only:
         - master
-  draft: true
