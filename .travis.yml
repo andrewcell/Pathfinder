@@ -1,23 +1,38 @@
 language: python
+jobs:
+  include:
+    - name: "On Windows"
+      language: shell
+      before_install:
+        - choco install python --version 3.6.0
+        - python -m pipi install --upgrade pip
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder.exe
+    - name: "On Linux"
+      python: 3.6
+      env: OUTPUT=pathfinder_linux
+
 os:
   - linux
 #  - osx
   - windows
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
-  - pip install pyinstaller
+  - pip3 install -r requirements.txt
+  - pip3 install pyinstaller
 # command to run tests
 script:
   - python3 test.py
-  - pyinstaller pathfinder.py --onefile
+  - pyinstaller pathfinder.py --onefile -n $OUTPUT
   - ls -l dist
+before_deploy:
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
 deploy:
   provider: releases
   api_key:
     secure: jiVsQcZOsWjNowx3NxfGywvziJ6Bf5vDccigusRL2OwnIkNYrGP0jRQRKfQxi2MSeVobZZ3mKDjXq++GBIH7Q6AWdDQ+K7vG1+vmsU1KKu/PhptgnOxUATYRobqm3ZKYpTgN4ZLYBQS22oBUT6piIKsFg7+u0o20sHAOWvvx7l+kvlK68MEta/M5L1TfcopSB+vaKPdGe+Twlx+LbvmvS96vVwtncQa+erkKO7QxkphNhUMmrfLEFCiJkniUMWytN//DGEl0zxKal0Tk3wF3pDhKO69nD1aRI3jpF4qfDO3+weRzXv0rzvBbpNJkDw78HkSw2Tjmspm7ZUK4gXfDhtJ9V2jyK9qYS2JO2SxZMWgU5OGrAi6o1Sv/LrABXpN06v99L+A2/CCaKyB6xgJKNsV4uDLKNqe3X6mzF0EdC172iOBm7gh/ueNEywSPbSM1d10xHk5X2osezE5tdNrx0hHXdhIl4CYuGvrN80YHwNHFxJI3zyvkRv2V8EwQ3jMLULN351uvcKEmJ//IUhxjsMC5x5u/NWRzDICmCjVq7dHBdOk3I9URafzne2wFCc75nehnstbvNLNFHJ3YpfWdNGa03GsbmV/gwDI3Cmd44pCSoRpj7IxMTxnzMKU+n39u1OEuFbF8aBhhGUWlHqkvKcrsJyMPwSKuHkjl47p/bi8=
   file:
-    - "dist/pathfinder"
+    - "dist/pathfinder_linux"
     - "dist/pathfinder.exe"
   on:
     repo: andrewcell/Pathfinder
