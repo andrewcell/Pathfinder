@@ -34,8 +34,9 @@ script:
   - pyinstaller pathfinder.py --onefile -n $OUTPUT
   - ls -l dist
 before_deploy:
-  - export RELEASE_TITLE=$(date '+%Y%m%d')
+  - export RELEASE_TITLE="#$TRAVIS_BUILD_NUMBER"
   - export TRAVIS_TAG=$RELEASE_TITLE
+  - chmod +x dist/*
 deploy:
   name: $RELEASE_TITLE
   provider: releases
