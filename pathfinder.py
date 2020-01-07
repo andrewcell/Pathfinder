@@ -44,7 +44,7 @@ def register():
     port = input("Type Mars World port number(Just enter or out-range will be 443 : ")
     if port == "" or int(port) <= 1 or int(port) >= 65535:
         port = 443
-    tls = input("Do you prefer use HTTPS protocol? (Just enter or other answers except NO will consider as YES)")
+    tls = input("Do you prefer use HTTPS protocol? (Just enter or other answers except NO will consider as YES) : ")
     if tls == "NO":
         tls = False
     else:
