@@ -10,11 +10,13 @@ jobs:
         - python -m pip install --upgrade pip
         - pip3 install pywin32
         - pip3 install wmi
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder-windows.exe; TAG=$(git log --format=%h -1)
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH; OUTPUT=pathfinder-windows.exe; TAG=$(git log --format=%h -1); UPDATER=pathfinder-updater-windows.exe
     - name: "On Linux"
       os: linux
       python: 3.6
-      env: OUTPUT=pathfinder-linux-amd64
+      env:
+        - OUTPUT=pathfinder-linux-amd64
+        - UPDATER=pathfinder-updater-linux-amd64
     - name: "On macOS"
       os: osx
       osx_image: xcode11.2
@@ -23,12 +25,16 @@ jobs:
         - pip3 install virtualenv
         - virtualenv env
         - source env/bin/activate
-      env: OUTPUT=pathfinder-macos
+      env:
+        - OUTPUT=pathfinder-macos
+        - UPDATER=pathfinder-updater-macos
     - name: "On Linux AArch64"
       os: linux
       arch: arm64
       python: 3.6
-      env: OUTPUT=pathfinder-linux-aarch64
+      env:
+        - OUTPUT=pathfinder-linux-aarch64
+        - UPDATER=pathfinder-updater-linux-aarch64
 # command to install dependencies
 install:
   - pip3 install -r requirements.txt
@@ -37,11 +43,11 @@ install:
 script:
   - python test.py
   - pyinstaller pathfinder.py --onefile -n $OUTPUT
+  - pyinstaller updater.py --onefile -n $UPDATER
   - ls -l dist
 before_deploy:
   - export RELEASE_TITLE="#$TRAVIS_BUILD_NUMBER"
   - export TRAVIS_TAG=$RELEASE_TITLE
-  - chmod +x dist/*
 deploy:
   name: $RELEASE_TITLE
   provider: releases
