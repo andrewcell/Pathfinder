@@ -7,10 +7,13 @@ import platform
 
 def checkUpdated(filename):
     print("--------------Validating " + filename + "--------------")
-    onlineFile = requests.get("https://raw.githubusercontent.com/andrewcell/Pathfinder/master/" + filename).text
-    diff = list(difflib.unified_diff(open("." + "/" + filename, "r").read().strip().splitlines(),
-                                      onlineFile.strip().splitlines(), fromfile=filename+".local",
-                                      tofile=filename + ".new", lineterm="", n=0))
+    try:
+        onlineFile = requests.get("https://raw.githubusercontent.com/andrewcell/Pathfinder/master/" + filename).text
+        diff = list(difflib.unified_diff(open("." + "/" + filename, "r").read().strip().splitlines(),
+                                          onlineFile.strip().splitlines(), fromfile=filename+".local",
+                                          tofile=filename + ".new", lineterm="", n=0))
+    except FileNotFoundError:
+        return True, onlineFile
     if not diff:
         print("No update found for " + filename + ".")
         return False, ""
@@ -63,18 +66,29 @@ def pyinstallerUpdate():
                 data.raw.decode_content = True
                 shutil.copyfileobj(data.raw, f)
             print("Download Completed - " + filename)
+            if not sys.platform.startswith('win'):
+                os.chmod(path + "/" + filename, 0o775)
             print("Update completed. " + filename + " available.")
+            try:
+                os.remove(path + "/" + "DOWNLOAD_HERE")
+            except FileNotFoundError:
+                pass
             sys.exit(0)
     print("No option available. Run on proper environment.")
     sys.exit(0)
 if __name__ == "__main__":
     print("Checking Newest Update")
-    import pathfinder
-    print("Current API Version : v" + pathfinder.v)
-    del pathfinder
-    import nasa
-    nasa = nasa.Nasa(".")
-    if nasa.fileExists("pathfinder-linux-amd64") or nasa.fileExists("pathfinder-linux-aarch64") or nasa.fileExists("pathfinder-macos") or nasa.fileExists("pathfinder-windowsexe"):
+    try:
+        import pathfinder
+        print("Current API Version : v" + pathfinder.v)
+        del pathfinder
+    except ImportError:
+        print("Looks like pathfinder is not installed here or corrupted. Proceed update will install pathfinder to updater locaton.")
+    if getattr(sys, 'frozen', False):
+        path = os.path.dirname(sys.executable)
+    else:
+        path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    if os.path.exists(os.path.join(path, "pathfinder-linux-amd64")) or os.path.exists(os.path.join(path, "pathfinder-linux-aarch64")) or os.path.exists(os.path.join(path, "DOWNLOAD_HERE")) or os.path.exists(os.path.join(path, "pathfinder-macos")) or os.path.exists(os.path.join(path, "pathfinder-windows.exe")):
         pyinstallerUpdate()
     try:
         print("Trying Git Pull from origin...")
@@ -96,4 +110,5 @@ if __name__ == "__main__":
         requireUpdate, newFile = checkUpdated(file)
         if requireUpdate:
             updateFile(file, newFile)
+            print("--------------" + file + " Updated--------------")
     print("Updater Job is completed.")
