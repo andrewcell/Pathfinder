@@ -25,5 +25,16 @@ user@localhost:~/Pathfinder$ sudo apt install python3-cpuinfo python3-psutil pyt
 root@localhost~:#  pkg install py36-requests py36-psutil py36-beautifulsoup py36-py-cpuinfo py36-distro
 ```
 
+# Prebuilt
+ - You can find binary in releases. Every commit, prebuilt file for Windows, Linux, macOS will appear. It is automated using Travis CI, pyinstaller.
+
+# Update
+If you installed or want update via Git, you need to install gitpython.
+```bash
+bash-3.2 ~# pip3 install gitpython
+```
+Run updater.py. This will get update from Github.
+ 
+ 
 # Build Status
 [![Build Status](https://travis-ci.org/andrewcell/Pathfinder.svg?branch=master)](https://travis-ci.org/andrewcell/Pathfinder)
