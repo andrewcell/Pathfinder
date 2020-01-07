@@ -35,6 +35,12 @@ bash-3.2 ~# pip3 install gitpython
 ```
 Run updater.py. This will get update from Github.
  
- 
+# Updater
+Recently, updater is added to Pathfinder.
+just run updater.py. updater will replace script files from Github.
+
+## Install
+Updater can operate as installer. just place updater to directory that you want to install pathfinder. Updater will automatically download require files include python scripts. If you want get pyinstaller prebuilt file, make empty file named "DOWNLOAD_HERE" (without quotes). 
+
 # Build Status
 [![Build Status](https://travis-ci.org/andrewcell/Pathfinder.svg?branch=master)](https://travis-ci.org/andrewcell/Pathfinder)
