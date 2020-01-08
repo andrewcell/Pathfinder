@@ -64,3 +64,18 @@ class Nasa:
         dict = self.getConfiguration()
         dict[optionName] = optionValue
         self.saveJSON(dict)
+
+    def returnServiceConfiguration(self, serviceName):
+        try:
+            config = json.loads(open(self.__location__ + "/services/" + serviceName + ".json", "r").read())
+        except Exception as E:
+            return {"comment": "notfound"}
+        else:
+            return {serviceName: config}
+
+    def createServiceDirectory(self):
+        try:
+            os.mkdir(self.__location__ + "/services")
+        except OSError:
+            print("Failed to create Service options directory.")
+

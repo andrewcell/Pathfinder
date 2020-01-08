@@ -12,6 +12,8 @@ from cryptography.hazmat.primitives import hashes
 from cpuinfo import get_cpu_info
 from datetime import datetime
 
+from nasa import Nasa
+
 class Computer:
     def __init__(self, publickey):
         self.key = load_pem_public_key(data=publickey.encode(), backend=default_backend())
@@ -152,3 +154,29 @@ class Computer:
 
     def getIOSpeed(self, A, B, interval):
         return (int(A) - int(B)) / interval
+
+    def generateServiceData(self, name):
+        nasa = Nasa(".")
+        serviceConfig = nasa.returnServiceConfiguration(name)
+        if name not in serviceConfig:
+            return False
+        else:
+            config = serviceConfig[name]
+            if name == "dmesg":
+                return self.generateDmesg(config)
+
+    def generateDmesg(self, config):
+        if platform.system().startswith("win"):
+            return ""
+        try:
+            method = config["method"]
+            if method == "command":
+                import subprocess
+                dmesg = subprocess.check_output("dmesg")
+            elif method == "file":
+                dmesg = open(config["url"], "r").read()
+            else:
+                dmesg = ""
+            return dmesg
+        except Exception as E:
+            return ""
