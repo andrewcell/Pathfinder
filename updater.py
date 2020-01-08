@@ -29,8 +29,7 @@ def updateFile(filename, newFile):
     file.close()
     print(filename + " is updated.")
 
-def pyinstallerUpdate():
-    path = os.path.dirname(sys.executable)
+def pyinstallerUpdate(path):
     print("Pyinstaller prebuilt detected. Updating prebuilt file.")
     print("Retrieving Latest release from Github...")
     latest = json.loads(requests.get("https://api.github.com/repos/andrewcell/Pathfinder/releases").text)[0]
@@ -89,7 +88,7 @@ if __name__ == "__main__":
     else:
         path = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     if os.path.exists(os.path.join(path, "pathfinder-linux-amd64")) or os.path.exists(os.path.join(path, "pathfinder-linux-aarch64")) or os.path.exists(os.path.join(path, "DOWNLOAD_HERE")) or os.path.exists(os.path.join(path, "pathfinder-macos")) or os.path.exists(os.path.join(path, "pathfinder-windows.exe")):
-        pyinstallerUpdate()
+        pyinstallerUpdate(path)
     try:
         print("Trying Git Pull from origin...")
         import git
