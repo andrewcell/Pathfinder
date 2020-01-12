@@ -29,7 +29,7 @@ class Computer:
         data = {
             "name": self.getHostname(),
             "architecture": self.getArchitecture(),
-            "cpu_name": get_cpu_info()["brand"],
+            "cpu_name": self.getCPUName(),
             "kernel_name": self.getKernelName(),
             "kernel_version": self.getKernelVersion(),
             "ram_size": psutil.virtual_memory()[0],
@@ -180,4 +180,11 @@ class Computer:
             return dmesg
         except Exception as E:
             return ""
+
+    def getCPUName(self):
+        brandname = get_cpu_info()["brand"]
+        if self.getArchitecture() == "aarch64":
+            brandname = "ARM" + brandname
+
+
 
