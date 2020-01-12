@@ -90,8 +90,8 @@ class Computer:
             'armv7l': 'arm',
             'armv7': 'arm',
             'armv8': 'aarch64',
-            'armv8l': 'aarch64'
-
+            'armv8l': 'aarch64',
+            'aarch64': 'aarch64'
         }
         arch = default.get(platform.machine(), lambda: "unknown")
         return arch
@@ -180,3 +180,4 @@ class Computer:
             return dmesg
         except Exception as E:
             return ""
+
