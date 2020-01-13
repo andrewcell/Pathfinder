@@ -106,13 +106,22 @@ def deregister():
 
 def daemon():
     rocket = Rocket(config["host"], config["port"], config["tls"])
+    sentDayData = False
     while True:
     #threading.Timer(1, daemon, [computer]).start()
         syncData = computer.generateSyncData(config["intervals"])
+        now = datetime.now()
+        if sentDayData == True:
+            if now.hour != 0 and now.minute != 0:
+                sentDayData = False
+        else:
+            dmesg = computer.generateServiceData("dmesg")
+            sentDayData = True
+        sentDayData = True
         encrypted_data = computer.encryptToBase64(json.dumps(syncData))
         Send(rocket, "sync", encrypted_data, config["systemid"], True)
-        now = datetime.now().microsecond
-        time.sleep(((1000000-now)*0.000001)+(config["intervals"]-1))
+
+        time.sleep(((1000000-now.microsecond)*0.000001)+(config["intervals"]-1))
 
 
 def Send(rocket, task, data, systemid, isDaemon=True):
@@ -150,7 +159,6 @@ def checkRegistered(terminate=True):
             return False
     else:
         return True
-
 
 if __name__ == "__main__":
     if sys.platform.startswith('win'):
