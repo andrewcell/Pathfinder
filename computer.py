@@ -185,6 +185,7 @@ class Computer:
         brandname = get_cpu_info()["brand"]
         if self.getArchitecture() == "aarch64":
             brandname = "ARM" + brandname
+        return brandname
 
 
 
